@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>京东轮播图</title>
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        a{
+            text-decoration: none;
+        }
+        .container{
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 100px auto 0 auto;
+            /*解决浮动问题*/
+            overflow: hidden;
+            box-shadow: gray 0 0 5px;
+
+        }
+        .img-list{
+            position: absolute;
+            z-index: 1;
+            width: 2800px;
+            height: 400px;
+
+        }
+        .container .img-list img{
+            width: 400px;
+            height: 400px;
+            float: left;
+        }
+        .container .btn{
+            position: absolute;
+            left: 30px;
+            bottom:20px;
+            width: 150px;
+            height: 10px;
+            z-index: 2;
+        }
+        .container .btn span{
+            margin-left: 5px;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: green;
+            text-align: center;
+            color:white;
+            cursor: pointer;
+        }
+        .container .btn span.on{
+            background-color: red;
+        }
+        .container .move{
+            position: absolute;
+            z-index: 2;
+            color: darkorange;
+            top: 50%;
+            padding:0 5px;
+            border-radius: 50%;
+            font-size: 20px;
+            display: none;
+        }
+        .container .move-left{
+            left: 15px;
+        }
+        .container .move-right{
+            right: 15px;
+        }
+        .container:hover .move{
+            display: inline-block;
+
+        }
+        .container .move:hover{
+            background-color: rgba(0,0,0,0.4);
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="img-list" style="left: -400px">
+        <img src="img/5.jpg" alt="">
+        <img src="img/1.jpg" alt="">
+        <img src="img/2.jpg" alt="">
+        <img src="img/3.jpg" alt="">
+        <img src="img/4.jpg" alt="">
+        <img src="img/5.jpg" alt="">
+        <img src="img/1.jpg" alt="">
+    </div>
+
+    <div class="btn">
+        <span class="on">1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>5</span>
+    </div>
+
+    <a href="javascript:" class="move move-left">&lt;</a>
+    <a href="javascript:" class="move move-right">&gt;</a>
+</div>
+
+
+
+    <script type="text/javascript">
+
+        const imgList = document.querySelector('.img-list');
+
+        let index = 0;
+        const dots = document.getElementsByTagName('span');
+
+        function showCurrrentDot() {
+            for (let i=0;i < dots.length;i++){
+                dots[i].className = '';
+            }
+            dots[index].className = 'on'
+        }
+        
+        const next = document.querySelector('.move-right').onclick = function () {
+
+            //点击向左按钮后 img-list的left值为-800 -1200。。。。
+            //当left值为-2400和1600时就是空白页 所以要实现循环就要在这两张加入图片
+            let aa;
+            if(imgList.style.left === '-2000px'){
+                aa = -400;
+            } else {
+                aa = parseInt(imgList.style.left) - 400;
+            }
+            // if(imgList.style.left === '-2400px'){
+            //     aa = -800;
+            // } else {
+            //     aa = parseInt(imgList.style.left) - 400;
+            // }
+            imgList.style.left = aa + 'px';
+
+            index++;
+            if(index > 4){
+                index = 0;
+            }
+            showCurrrentDot();
+        };
+
+        const pre = document.querySelector('.move-left').onclick = function () {
+            //点击向左按钮后 img-list的left值为-800 -1200。。。。
+            let bb;
+            if(imgList.style.left === '-400px') {
+                bb = -2000;
+            }else {
+                bb = parseInt(imgList.style.left) + 400;
+            }
+            // if(imgList.style.left === '0px'){
+            //     bb = -1600;
+            // }else if (imgList.style.left === '-2000px'){
+            //     bb = -400;
+            // } else {
+            //     bb = parseInt(imgList.style.left) - 400;
+            // }
+            imgList.style.left = bb + 'px';
+
+            index--;
+            if(index < 0){
+                index = 4;
+            }
+            showCurrrentDot();
+
+        };
+
+        let timer = null;
+        function autoPlay() {
+            timer = setInterval(function () {
+                next();
+
+            },1000);
+        }
+        autoPlay();
+
+        const container = document.querySelector('.container');
+        container.onmouseover = function () {
+            //清除计时器
+            clearInterval(timer)
+        };
+        container.onmouseleave = function () {
+            autoPlay();
+        };
+
+
+        for (let i=0;i < dots.length;i++){
+            dots[i].onclick = function () {
+                index = i;
+                imgList.style.left = -400 + index*(-400)+"px";
+                showCurrrentDot();
+            }
+        }
+
+
+    </script>
+</body>
+</html>
